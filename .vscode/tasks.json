@@ -1,0 +1,43 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++ build active file",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                "${workspaceFolder}/demo/snake.cpp",
+                "${workspaceFolder}/demo/main.cpp",
+                "${workspaceFolder}/scr/jform.cpp",
+                "${workspaceFolder}/scr/jmenu.cpp",
+                "${workspaceFolder}/scr/jwindow.cpp",
+                "-o",
+                "${workspaceFolder}/snake",
+                "-I", "/usr/include",
+                "-I", "/usr/local/include",
+                "-I", "${workspaceFolder}/inc",
+                "-I", "${workspaceFolder}/demo",
+                "-L", "/usr/local/lib",
+                "-L", "/usr/lib",
+                //"-l", "gxiapi",
+                
+                "-l", "menu",
+                "-l", "panel",
+                "-l", "form",
+                "-l", "curses",
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Generated task by Debugger"
+        }
+    ],
+    "version": "2.0.0"
+}

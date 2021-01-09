@@ -16,8 +16,11 @@
                 "-I", "/usr/include",
                 "-I", "/usr/local/include",
                 "-I", "${workspaceFolder}/inc",
+                "-I", "${workspaceFolder}/demo",
                 "-L", "/usr/local/lib",
                 "-L", "/usr/lib",
+                //"-l", "gxiapi",
+                
                 "-l", "menu",
                 "-l", "panel",
                 "-l", "form",

@@ -64,8 +64,8 @@ int main()
     JField* form1List[] = {&field1,&field2,&field3};
     form1.Set_Fields(form1List,ARRAY_SIZE(form1List));
     
-    JInit();
-    baseMenu.Display();
+    j_init();
+    baseMenu.display();
     refresh();
     endwin();
     return 0;
@@ -103,10 +103,10 @@ int32_t Field3_Pull(std::string&  text)
 
 int32_t Item2_Event(JMenu* ptr)
 {
-    JPrint(data2.c_str());
+    j_print(data2.c_str());
 }
 
 int32_t Item12_Event(JMenu* ptr)
 {
-    JPrint(data1.c_str());
+    j_print(data1.c_str());
 }

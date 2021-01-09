@@ -31,7 +31,7 @@ public:
     {
         if (pullMessageList!=NULL)
         {
-            return Get_Feedback(mPull(p),pullMessageList);
+            return get_feedback(mPull(p),pullMessageList);
         }
         else
         {
@@ -44,7 +44,7 @@ public:
     {
         if (pushMessageList!=NULL)
         {
-            return Get_Feedback(mPush(p),pushMessageList);
+            return get_feedback(mPush(p),pushMessageList);
         }
         else
         {
@@ -90,11 +90,11 @@ class JForm : public JApp
 public:
 
     JForm(int32_t startX, int32_t startY, uint32_t height, uint32_t width, const char* title):
-    JApp(startX,startY,height,width,title),mFieldList(NULL),mLastMenu(NULL),mFieldNum(0){}
+    JApp(startX,startY,height,width,title),mFieldList(NULL),jmenu_last(NULL),mFieldNum(0){}
 
     ~JForm(){}
 
-    virtual void Display(void);
+    virtual void display(void);
 
     void Close_Form(void);
 
@@ -122,7 +122,7 @@ private:
 
     JField** mFieldList;
     
-    JMenu* mLastMenu;
+    JMenu* jmenu_last;
 
     int32_t mFieldNum;
 

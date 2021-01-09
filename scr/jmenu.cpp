@@ -1,61 +1,65 @@
 #include "jmenu.hpp"
 #include <stdlib.h>
+#include <algorithm>
 
-void JMenu::Create_Menu(void)
+void JMenu::create(void)
 {    
-    if (initFlag == true)
-    {
-        mItems = (ITEM**)new ITEM* [mItemNum+1];
+    items = (ITEM**)new ITEM* [item_num+1];
     
-        int32_t length;
+    int32_t length;
 
-        for(int i = 0; i < mItemNum; ++i)
-        {
-            length = mItemList[i]->Get_Width();
-            mItems[i] = new_item(mItemList[i]->Get_Title()," ");
-            if (length>mLengthMax)   mLengthMax = length+2;
-        }
-
-        mMenu = new_menu((ITEM**)mItems);
-
-        initFlag = false;
-    }
-
-    mMenuWindow = derwin(Get_Base_Window(),Get_H()-3,mLengthMax,2,(Get_W()-mLengthMax)/2);
-
-    set_menu_win(mMenu, Get_Base_Window());
-
-    set_menu_sub(mMenu, mMenuWindow);
-
-    set_menu_format(mMenu,Get_H()-4,1);
-
-    set_menu_mark(mMenu,"->");
-
-    post_menu(mMenu);
-
-}
-
-void JMenu::Close_Menu(void)
-{
-    unpost_menu(mMenu);
-    free_menu(mMenu);
-    mMenu = NULL;
-    for (int32_t i = 0; i < mItemNum; ++i)
+    for(int i = 0; i < item_num; ++i)
     {
-        free_item(mItems[i]);
+        length = jitems[i]->get_width();
+        items[i] = new_item(jitems[i]->get_title()," ");
+        if (length>mLengthMax)   mLengthMax = length+2;
     }
-    delete[] mItems;
-    free_menu(mMenu);
-    //free(mItems);
-    mItems = NULL;
 
-    delwin(mMenuWindow);
-    delwin(Get_Base_Window());
+    menu = new_menu((ITEM**)items);
 }
 
-void JBaseMenu::Display(void)
+void JMenu::post(void)
+{
+    window_menu = derwin(get_base_window(),get_h()-3,mLengthMax,2,(get_w()-mLengthMax)/2);
+
+    set_menu_win(menu, get_base_window());
+
+    set_menu_sub(menu, window_menu);
+
+    set_menu_format(menu,get_h()-4,1);
+
+    set_menu_mark(menu,"->");
+
+    post_menu(menu);
+}
+
+
+void JMenu::close(void)
+{
+    unpost_menu(menu);
+    free_menu(menu);
+    menu = NULL;
+    for (int32_t i = 0; i < item_num; ++i)
+    {
+        free_item(items[i]);
+    }
+    delete[] items;
+    free_menu(menu);
+    //free(items);
+    items = NULL;
+
+    delwin(window_menu);
+    delwin(get_base_window());
+}
+
+void JBaseMenu::display(void)
 {
     int c = 0;
+    JMenu* first = mCurrentMenu;
+    Menu_Recursion();
+    //Sort_Menu();
+    create();
+    mCurrentMenu = first;
     while(c != KEY_F(2))
     {
         if (Get_Refresh_Bit())
@@ -64,31 +68,31 @@ void JBaseMenu::Display(void)
             Reset_Refresh_Bit();
         }
 
-        wrefresh(mCurrentMenu->Get_Base_Window());
-        c = wgetch(mCurrentMenu->Get_Base_Window());
+        wrefresh(mCurrentMenu->get_base_window());
+        c = wgetch(mCurrentMenu->get_base_window());
         
         switch (c)
         {
         case KEY_DOWN:
-            menu_driver(mCurrentMenu->Get_Menu_List(), REQ_DOWN_ITEM);
+            menu_driver(mCurrentMenu->get_menu(), REQ_DOWN_ITEM);
             if (Get_Clear_Flag())    Base_Clear();
             break;
         
         case KEY_UP:
-            menu_driver(mCurrentMenu->Get_Menu_List(), REQ_UP_ITEM);
+            menu_driver(mCurrentMenu->get_menu(), REQ_UP_ITEM);
             if (Get_Clear_Flag())    Base_Clear();
             break;
 
         case KEY_NPAGE:
-            menu_driver(mCurrentMenu->Get_Menu_List(), REQ_SCR_DPAGE);
+            menu_driver(mCurrentMenu->get_menu(), REQ_SCR_DPAGE);
             break;
 
         case KEY_PPAGE:
-            menu_driver(mCurrentMenu->Get_Menu_List(), REQ_SCR_UPAGE);
+            menu_driver(mCurrentMenu->get_menu(), REQ_SCR_UPAGE);
             break;
         
         case KEY_LEFT:
-            if (mCurrentMenu->Get_Last_Menu()!=NULL)
+            if (mCurrentMenu->get_jmenu_last()!=NULL)
             Switch_Backward();
             Base_Clear();
             break;
@@ -96,19 +100,19 @@ void JBaseMenu::Display(void)
         case KEY_RIGHT:
             {
                 ITEM *cur;
-                cur = current_item(mCurrentMenu->Get_Menu_List());
+                cur = current_item(mCurrentMenu->get_menu());
 
-                if (mCurrentMenu->Get_Item_List()[cur->index]->Get_Event()!=NULL)
-                Base_Print(mCurrentMenu->Get_Item_List()[cur->index]->Selected(mCurrentMenu));
+                if (mCurrentMenu->get_jitems()[cur->index]->Get_Event()!=NULL)
+                base_print(mCurrentMenu->get_jitems()[cur->index]->Selected(mCurrentMenu));
 
                 JMenu* nextMenu;
-                nextMenu = mCurrentMenu->Get_Item_List()[cur->index]->Get_Next_Menu();
+                nextMenu = mCurrentMenu->get_jitems()[cur->index]->Get_Next_Menu();
 
                 if (nextMenu!=NULL) Switch_Forward(nextMenu);
                 else
                 {
                     JApp* nextApp;
-                    nextApp = mCurrentMenu->Get_Item_List()[cur->index]->Get_Next_App();
+                    nextApp = mCurrentMenu->get_jitems()[cur->index]->Get_Next_App();
                     if (nextApp!=NULL)
                     {
                         Run_App(nextApp);
@@ -121,21 +125,69 @@ void JBaseMenu::Display(void)
         }
     }
 
-    while(mCurrentMenu->Get_Last_Menu()!=NULL)
+    while(mCurrentMenu->get_jmenu_last()!=NULL)
     {
         Switch_Backward();
         Refresh_Menu();
     }
-    mCurrentMenu->Close_Menu();
+    mCurrentMenu->close();
 }
 
 void JBaseMenu::Run_App(JApp* app)
 {
-    keypad(mCurrentMenu->Get_Base_Window(),FALSE);
-    unpost_menu(mCurrentMenu->Get_Menu_List());
-    app->Display();
+    keypad(mCurrentMenu->get_base_window(),FALSE);
+    unpost_menu(mCurrentMenu->get_menu());
+    app->display();
     clear();
     Set_Refresh_Bit();
+}
+
+void JBaseMenu::Menu_Recursion(void)
+{
+    int i = 0;
+    int num = mCurrentMenu->get_item_num();
+    JMenu* next = NULL;
+    JMenu* last = NULL;
+    mTree.push_back(mCurrentMenu);
+    for (i=0;i<num;i++)
+    {
+        next = mCurrentMenu->get_jitems()[i]->Get_Next_Menu();
+        if (next != NULL)
+        {
+            last = mCurrentMenu;
+            mCurrentMenu = next;
+            mCurrentMenu->set_jmenu_last(last);
+            Menu_Recursion();
+            mCurrentMenu = last;
+        }
+    }  
+}
+
+void JBaseMenu::Sort_Menu(void)
+{
+    JMenu* temp;
+
+    for (int i = 0; i<mTree.size();i++)
+    {
+        for (int n = 0; n<mTree.size()-1;n++)
+        {
+            if (mTree[n]->get_item_num()>mTree[n+1]->get_item_num())
+            {
+                temp = mTree[n];
+                mTree[n] = mTree[n+1];
+                mTree[n+1] = temp;
+            }
+        }
+    }
+}
+
+
+void JBaseMenu::create(void)
+{
+    for (int i = 0; i<mTree.size();i++)
+    {
+        mTree[i]->create();  
+    }
 }
 
 

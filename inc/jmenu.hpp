@@ -1,7 +1,6 @@
 #ifndef __JMENU_HPP
 #define __JMENU_HPP
 #include <menu.h>
-#include <array>
 #include <vector>
 #include "jwindow.hpp"
 
@@ -39,7 +38,7 @@ public:
     {
         if (mMessageList!=NULL)
         {
-           return Get_Feedback(itemEvent(menuPtr),mMessageList); 
+           return get_feedback(itemEvent(menuPtr),mMessageList); 
         }
         else
         {
@@ -91,68 +90,71 @@ class JMenu : public JWindow
 public:
 
     JMenu(int32_t startX, int32_t startY, uint32_t height, uint32_t width, const char* title):
-    JWindow(startX,startY,height,width,title),mItemList(NULL),mItemNum(0),initFlag(true),mLengthMax(10){}
+    JWindow(startX,startY,height,width,title),jitems(NULL),item_num(0),initFlag(true),mLengthMax(10){}
 
     ~JMenu(){}
 
-    void Create_Menu(void);
+    void create(void);
 
-    void Close_Menu(void);
+    void post(void);
 
-    virtual void Set_Items(JItem<JMenu>** itemList, int32_t num)
+    void close(void);
+
+    virtual void set_jitems(JItem<JMenu>** itemList, int32_t num)
     {
-        mItemList = itemList;
-        mItemNum = num;
+        jitems = itemList;
+        item_num = num;
     }
 
-    void Set_Last_Menu(JMenu* menu)
+    void set_jmenu_last(JMenu* menu)
     {
-        mLastMenu = menu;
+        jmenu_last = menu;
     }
 
-    JMenu* Get_Last_Menu(void)
+    JMenu* get_jmenu_last(void)
     {
-        return mLastMenu;
+        return jmenu_last;
     }
 
-    JItem<JMenu>** Get_Item_List(void)
+    JItem<JMenu>** get_jitems(void)
     {
-        return mItemList;
+        return jitems;
     }
 
-    WINDOW* Get_Menu_Win(void)
+    WINDOW* set_window_menu(void)
     {
-        return mMenuWindow;
+        return window_menu;
     }
 
-    MENU* Get_Menu_List(void)
+    MENU* get_menu(void)
     {
-        return mMenu;
+        return menu;
     }
 
-    ITEM** Get_Items(void)
+    ITEM** get_items(void)
     {
-        return mItems;
+        return items;
     }
 
-    int32_t Get_Item_Num(void)
+    int32_t get_item_num(void)
     {
-        return mItemNum;
+        return item_num;
     }
+
 
 protected:
 
-    WINDOW*         mMenuWindow;        /*the window that associate the menu*/
+    WINDOW*         window_menu;        /*the window that associate the menu*/
 
-    MENU*           mMenu;              /*the menu list*/
+    MENU*           menu;              /*the menu list*/
 
-    ITEM**          mItems;             /*item list used to allocate memory*/
+    ITEM**          items;             /*item list used to allocate memory*/
     
-    JItem<JMenu>**  mItemList;
+    JItem<JMenu>**  jitems;
     
-    int32_t         mItemNum;
+    int32_t         item_num;
 
-    JMenu*          mLastMenu;
+    JMenu*          jmenu_last;
 
     bool            initFlag;
 
@@ -176,19 +178,19 @@ public:
         mThisMenu = NULL;
     }
 
-    void Set_Items(JItem<JMenu>** list, int32_t num)
+    void set_jitems(JItem<JMenu>** list, int32_t num)
     {
-        mThisMenu->Set_Items(list,num);
+        mThisMenu->set_jitems(list,num);
     }
 
-    virtual void Display(void);
+    virtual void display(void);
 
 protected:
     void Switch_Forward(JMenu* newMenu)
     {
         clear();
-        unpost_menu(mCurrentMenu->Get_Menu_List());
-        newMenu->Set_Last_Menu(mCurrentMenu);
+        unpost_menu(mCurrentMenu->get_menu());
+        newMenu->set_jmenu_last(mCurrentMenu);
         mCurrentMenu = newMenu;
         Set_Refresh_Bit();
     }
@@ -196,23 +198,33 @@ protected:
     void Switch_Backward(void)
     {
         clear();
-        unpost_menu(mCurrentMenu->Get_Menu_List());
-        mCurrentMenu = mCurrentMenu->Get_Last_Menu();
+        unpost_menu(mCurrentMenu->get_menu());
+        mCurrentMenu = mCurrentMenu->get_jmenu_last();
         Set_Refresh_Bit();
     }
 
     void Refresh_Menu(void)
     {
-        mCurrentMenu->Show();
-        mCurrentMenu->Create_Menu();
+        mCurrentMenu->post_frame();
+        mCurrentMenu->post();
     }
 
     void Run_App(JApp* app);
 
-private:
-    JMenu* mCurrentMenu;
+    void Menu_Recursion(void);
 
-    JMenu* mThisMenu;
+    void Sort_Menu(void);
+    
+    void create(void);
+
+    void Delete_Menu(void);
+
+private:
+    JMenu* mCurrentMenu;    //current menu displayed
+
+    JMenu* mThisMenu;       //base menu
+
+    std::vector<JMenu*> mTree;
 };
 
 #define JITEM(objName,strTitle)                     JItem<JMenu> objName (strTitle)
@@ -224,7 +236,7 @@ private:
 #define JMENU_BASE(objName,strTitle)                JBaseMenu objName (30,2,20,40,strTitle)
 #define MENU_SET_ITEM(menuName,itemPtrs...)\
         JItem<JMenu>* menuName##list[] = {itemPtrs};\
-        menuName.Set_Items(menuName##list,ARRAY_SIZE(menuName##list))
+        menuName.set_jitems(menuName##list,ARRAY_SIZE(menuName##list))
 
 #endif
 

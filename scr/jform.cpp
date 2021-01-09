@@ -9,7 +9,7 @@ void JForm::Create_Form(void)
 
     mFields = new FIELD* [mFieldNum+1];
 
-    keypad(Get_Base_Window(),TRUE);
+    keypad(get_base_window(),TRUE);
 
     for (int i = 0; i < mFieldNum; ++i)
     {
@@ -23,24 +23,24 @@ void JForm::Create_Form(void)
 
         set_field_type(mFields[i],TYPE_NUMERIC);                /*numerical inputs only*/
 
-        length = strlen(mFieldList[i]->Get_Title());
+        length = strlen(mFieldList[i]->get_title());
 
         if (length > lengthMax) lengthMax = length;   
     }
 
-    mFormWindow = derwin(Get_Base_Window(),Get_H()-4,Get_W()/2-4,2,(Get_W()/2));
+    mFormWindow = derwin(get_base_window(),get_h()-4,get_w()/2-4,2,(get_w()/2));
 
-    mLabelWindow = derwin(Get_Base_Window(),Get_H()-4,lengthMax,2,Get_W()/2-lengthMax-1);
+    mLabelWindow = derwin(get_base_window(),get_h()-4,lengthMax,2,get_w()/2-lengthMax-1);
 
     std::string q;
 
     for (int i = 0; i < mFieldNum; ++i)
     {
-        mvwprintw(mLabelWindow,1+i,1,mFieldList[i]->Get_Title());
+        mvwprintw(mLabelWindow,1+i,1,mFieldList[i]->get_title());
         mFieldList[i]->Pull(q);
 
         set_field_buffer(mFields[i],0,q.c_str());
-        JPrint(q.c_str());
+        j_print(q.c_str());
         refresh();
     }
 
@@ -48,7 +48,7 @@ void JForm::Create_Form(void)
 
     mForm = new_form(mFields);
 
-    set_form_win(mForm, Get_Base_Window());
+    set_form_win(mForm, get_base_window());
 
     set_form_sub(mForm, mFormWindow);
 
@@ -60,7 +60,7 @@ void JForm::Close_Form(void)
 {
     selected = 0;
 
-    keypad(Get_Base_Window(),FALSE);
+    keypad(get_base_window(),FALSE);
     unpost_form(mForm);
 
     for (int32_t i = 0; i < mFieldNum; i++)
@@ -71,19 +71,19 @@ void JForm::Close_Form(void)
 
     free_form(mForm);
     delwin(mFormWindow);
-    delwin(Get_Base_Window());
+    delwin(get_base_window());
 }
 
-void JForm::Display(void)
+void JForm::display(void)
 {
-    Show();
+    post_frame();
     Create_Form();
-    wrefresh(Get_Base_Window());
+    wrefresh(get_base_window());
     form_driver(mForm,REQ_END_FIELD);
     int c = 0;
     while (c != KEY_LEFT)
     {
-        c = wgetch(Get_Base_Window());
+        c = wgetch(get_base_window());
 
         switch (c)
         {
@@ -109,7 +109,7 @@ void JForm::Display(void)
             case 10://key_enter
                 form_driver(mForm,REQ_END_FIELD);
                 Update();
-                Base_Print("Saved");
+                base_print("Saved");
                 refresh();
                 break;
             default:

@@ -2,13 +2,20 @@
 #define __JWINDOW_HPP
 #include <ncurses.h>
 
+#define PROPERTY_R(variable,type) type get_##variable(void) {return variable;}
+#define PROPERTY_W(variable,type) void set_##variable(type value) {variable=value;}
+
+#define PROPERTY_RW(variable,type)\
+        PROPERTY_R(variable,type)\
+        PROPERTY_W(variable,type)
+
 /**
  * @brief JCurses initialization function
  * @note call it as initialization
  */
-void JInit(void);
+void j_init(void);
 
-void JPrint(const char* content);
+void j_print(const char* content);
 
 /**
  *                 w
@@ -25,34 +32,34 @@ class JWindow
 {
 public:
     JWindow(int32_t startX, int32_t startY, int32_t height, int32_t width, const char* title):
-    x(startX),y(startY),h(height),w(width),mTitle(title)
+    x(startX),y(startY),h(height),w(width),title(title)
     {
-        mBaseWindow = newwin(h,w,y,x);
+        base_window = newwin(h,w,y,x);
     }
     ~JWindow()
     {
-        //wborder(mBaseWindow, ' ', ' ', ' ',' ',' ',' ',' ',' ');
-        //wrefresh(mBaseWindow);
-        //delwin(mBaseWindow);
+        //wborder(base_window, ' ', ' ', ' ',' ',' ',' ',' ',' ');
+        //wrefresh(base_window);
+        //delwin(base_window);
     }
 
-    int32_t Get_X(void) {return x;}
+    PROPERTY_R(x,int32_t);
 
-    int32_t Get_Y(void) {return y;}
+    PROPERTY_R(y,int32_t);
 
-    int32_t Get_W(void) {return w;}
+    PROPERTY_R(w,int32_t);
 
-    int32_t Get_H(void) {return h;}
+    PROPERTY_R(h,int32_t);
 
-    WINDOW* Get_Base_Window(void)   {return mBaseWindow;}
+    PROPERTY_R(base_window,WINDOW*);
 
-    void Show(void);            /*show title and box*/
+    void post_frame(void);            /*show title and box*/
 
-    void Terminal_Print(const char* text);
+    void terminal_print(const char* text);
 
 private:
     
-    WINDOW* mBaseWindow;        /*the main window*/
+    WINDOW* base_window;        /*the main window*/
 
     const int32_t h;            /*current window height*/
     
@@ -62,7 +69,7 @@ private:
     
     const int32_t y;            /*current window start position*/
     
-    const char* mTitle;         /*current menu title and item title*/
+    const char* title;         /*current menu title and item title*/
 
 };
 
@@ -78,27 +85,22 @@ typedef struct
 class JWidget
 {
 public:
-    JWidget(const char* title):mTitle(title),mWidth(0)
+    JWidget(const char* mTitle):title(mTitle),width(0)
     {
-        for (;title[mWidth]!= '\0';mWidth++);
+        for (;title[width]!= '\0';width++);
     }
     ~JWidget(){}
 
-    const char* Get_Title(void)
-    {
-        return mTitle;
-    }
-    const int32_t Get_Width(void)
-    {
-        return mWidth;
-    }
+    PROPERTY_R(title,const char*);
+
+    PROPERTY_R(width,int32_t);
 
 protected:
-    const char* Get_Feedback(int32_t feedback, event_feedback_t* messageList);
+    const char* get_feedback(int32_t feedback, event_feedback_t* messageList);
 
 private:
-    const char* mTitle;
-    int32_t mWidth;
+    const char* title;
+    int32_t width;
 };
 
 class JApp : public JWindow
@@ -108,9 +110,9 @@ public:
     JWindow(startX,startY,height,width,title),refreshBit(true),clearFlag(false){}
     ~JApp(){}
 
-    virtual void Display(){}
+    virtual void display(){}
 
-    void Base_Print(const char* content)
+    void base_print(const char* content)
     {
         mvprintw(LINES-2,0,content);
         clearFlag = true;
@@ -118,7 +120,7 @@ public:
 
     void Base_Clear(void)
     {
-        Base_Print("                                    ");
+        base_print("                                    ");
         refresh();
         Reset_Clear_Flag();
     }

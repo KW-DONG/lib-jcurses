@@ -41,7 +41,7 @@ void Snake_Loop(void)
     endwin();
 }
 
-void JSnake::Display(void)
+void JSnake::display(void)
 {
     Snake_Loop();
 }

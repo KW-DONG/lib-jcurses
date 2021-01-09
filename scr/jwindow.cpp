@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <cstring>
 
-void JInit()
+void j_init()
 {
     initscr();
     //curs_set(0);
@@ -11,23 +11,23 @@ void JInit()
     keypad(stdscr,TRUE);
 }
 
-void JWindow::Show(void)
+void JWindow::post_frame(void)
 {
     /*display title*/
-    int length = strlen(mTitle);
+    int length = strlen(title);
     float temp = (w - length)/ 2;
 
     /*create window*/
-    mBaseWindow = newwin(h,w,y,x);
+    base_window = newwin(h,w,y,x);
 
-    wborder(mBaseWindow, '|', '|', '-', '-', '+', '+', '+', '+');
+    wborder(base_window, '|', '|', '-', '-', '+', '+', '+', '+');
 
-    mvwprintw(mBaseWindow, 0, (int)temp-1, "[%s]", mTitle);
+    mvwprintw(base_window, 0, (int)temp-1, "[%s]", title);
 
-    keypad(mBaseWindow, TRUE);
+    keypad(base_window, TRUE);
 }
 
-const char* JWidget::Get_Feedback(int32_t feedback, event_feedback_t* messageList)
+const char* JWidget::get_feedback(int32_t feedback, event_feedback_t* messageList)
 {
     static const char noFeedback[] = "no feedback";
 
@@ -43,7 +43,7 @@ const char* JWidget::Get_Feedback(int32_t feedback, event_feedback_t* messageLis
     return noFeedback;
 }
 
-void JPrint(const char* content)
+void j_print(const char* content)
 {
     mvprintw(0,0,content);
 }

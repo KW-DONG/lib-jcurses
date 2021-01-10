@@ -38,19 +38,14 @@ public:
     }
 
     PROPERTY_RW(japp,JApp*);
-
     PROPERTY_RW(jmenu,T*);
-
     PROPERTY_R(event,Item_Sel_Callback);
 
 private:
 
     T* jmenu;
-
     JApp* japp;
-
     int32_t (*event)(T* menuPtr);      /*write an event here*/
-
     event_feedback_t* mMessageList;
 };
 
@@ -88,35 +83,22 @@ public:
     }
 
     PROPERTY_RW(jmenu_last,JMenu*);
-
     PROPERTY_R(jitems,JItem<JMenu>**);
-
     PROPERTY_R(window_menu,WINDOW*);
-
     PROPERTY_R(menu,MENU*);
-
     PROPERTY_R(items,ITEM**);
-
     PROPERTY_R(item_num,int32_t);
 
 protected:
 
     WINDOW*         window_menu;        /*the window that associate the menu*/
-
     MENU*           menu;              /*the menu list*/
-
     ITEM**          items;             /*item list used to allocate memory*/
-    
     JItem<JMenu>**  jitems;
-    
     int32_t         item_num;
-
     JMenu*          jmenu_last;
-
     bool            initFlag;
-
     int32_t         mLengthMax;
-
 };
 
 class JBaseMenu : public JApp
@@ -143,44 +125,42 @@ public:
     virtual void display(void);
 
 protected:
-    void Switch_Forward(JMenu* newMenu)
+    void switch_f(JMenu* newMenu)
     {
         clear();
         unpost_menu(mCurrentMenu->get_menu());
         newMenu->set_jmenu_last(mCurrentMenu);
         mCurrentMenu = newMenu;
-        Set_Refresh_Bit();
+        set_jrefresh_bit();
     }
 
-    void Switch_Backward(void)
+    void switch_b(void)
     {
         clear();
         unpost_menu(mCurrentMenu->get_menu());
         mCurrentMenu = mCurrentMenu->get_jmenu_last();
-        Set_Refresh_Bit();
+        set_jrefresh_bit();
     }
 
-    void Refresh_Menu(void)
+    void refresh_menu(void)
     {
         mCurrentMenu->post_frame();
         mCurrentMenu->post();
     }
 
-    void Run_App(JApp* app);
+    void run_japp(JApp* app);
 
-    void Menu_Recursion(void);
+    void menu_recursion(void);
 
-    void Sort_Menu(void);
+    void menu_sort(void);
     
     void create(void);
 
-    void Delete_Menu(void);
+    void menu_delete(void);
 
 private:
     JMenu* mCurrentMenu;    //current menu displayed
-
     JMenu* mThisMenu;       //base menu
-
     std::vector<JMenu*> mTree;
 };
 

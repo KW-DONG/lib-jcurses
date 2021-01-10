@@ -56,16 +56,16 @@ void JBaseMenu::display(void)
 {
     int c = 0;
     JMenu* first = mCurrentMenu;
-    Menu_Recursion();
+    menu_recursion();
     //Sort_Menu();
     create();
     mCurrentMenu = first;
     while(c != KEY_F(2))
     {
-        if (Get_Refresh_Bit())
+        if (get_jrefresh_bit())
         {
-            Refresh_Menu();
-            Reset_Refresh_Bit();
+            refresh_menu();
+            reset_jrefresh_bit();
         }
 
         wrefresh(mCurrentMenu->get_base_window());
@@ -75,12 +75,12 @@ void JBaseMenu::display(void)
         {
         case KEY_DOWN:
             menu_driver(mCurrentMenu->get_menu(), REQ_DOWN_ITEM);
-            if (Get_Clear_Flag())    Base_Clear();
+            if (get_jclear_bit())    base_clear();
             break;
         
         case KEY_UP:
             menu_driver(mCurrentMenu->get_menu(), REQ_UP_ITEM);
-            if (Get_Clear_Flag())    Base_Clear();
+            if (get_jclear_bit())    base_clear();
             break;
 
         case KEY_NPAGE:
@@ -93,8 +93,8 @@ void JBaseMenu::display(void)
         
         case KEY_LEFT:
             if (mCurrentMenu->get_jmenu_last()!=NULL)
-            Switch_Backward();
-            Base_Clear();
+            switch_b();
+            base_clear();
             break;
         
         case KEY_RIGHT:
@@ -108,14 +108,14 @@ void JBaseMenu::display(void)
                 JMenu* nextMenu;
                 nextMenu = mCurrentMenu->get_jitems()[cur->index]->get_jmenu();
 
-                if (nextMenu!=NULL) Switch_Forward(nextMenu);
+                if (nextMenu!=NULL) switch_f(nextMenu);
                 else
                 {
                     JApp* nextApp;
                     nextApp = mCurrentMenu->get_jitems()[cur->index]->get_japp();
                     if (nextApp!=NULL)
                     {
-                        Run_App(nextApp);
+                        run_japp(nextApp);
                     }
                     
                 }
@@ -127,22 +127,22 @@ void JBaseMenu::display(void)
 
     while(mCurrentMenu->get_jmenu_last()!=NULL)
     {
-        Switch_Backward();
-        Refresh_Menu();
+        switch_b();
+        refresh_menu();
     }
     mCurrentMenu->close();
 }
 
-void JBaseMenu::Run_App(JApp* app)
+void JBaseMenu::run_japp(JApp* app)
 {
     keypad(mCurrentMenu->get_base_window(),FALSE);
     unpost_menu(mCurrentMenu->get_menu());
     app->display();
     clear();
-    Set_Refresh_Bit();
+    set_jrefresh_bit();
 }
 
-void JBaseMenu::Menu_Recursion(void)
+void JBaseMenu::menu_recursion(void)
 {
     int i = 0;
     int num = mCurrentMenu->get_item_num();
@@ -157,13 +157,13 @@ void JBaseMenu::Menu_Recursion(void)
             last = mCurrentMenu;
             mCurrentMenu = next;
             mCurrentMenu->set_jmenu_last(last);
-            Menu_Recursion();
+            menu_recursion();
             mCurrentMenu = last;
         }
     }  
 }
 
-void JBaseMenu::Sort_Menu(void)
+void JBaseMenu::menu_sort(void)
 {
     JMenu* temp;
 

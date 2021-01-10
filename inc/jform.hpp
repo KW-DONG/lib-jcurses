@@ -17,17 +17,17 @@ public:
 
     ~JField(){}
 
-    void Set_Push(Field_Push_Callback pushCallback, event_feedback_t* messageList)
+    void set_push(Field_Push_Callback pushCallback, event_feedback_t* messageList)
     {
         mPush = pushCallback;
     }
 
-    void Set_Pull(Field_Pull_Callback pullCallback, event_feedback_t* messageList)
+    void set_pull(Field_Pull_Callback pullCallback, event_feedback_t* messageList)
     {
         mPull = pullCallback;
     }
 
-    const char* Pull(std::string& p)
+    const char* pull(std::string& p)
     {
         if (pullMessageList!=NULL)
         {
@@ -40,7 +40,7 @@ public:
         }
     }
 
-    const char* Push(std::string& p)
+    const char* push(std::string& p)
     {
         if (pushMessageList!=NULL)
         {
@@ -53,12 +53,12 @@ public:
         }
     }
 
-    Field_Pull_Callback Get_Pull(void)
+    Field_Pull_Callback get_pull(void)
     {
         return mPull;
     }
 
-    Field_Push_Callback Get_Push(void)
+    Field_Push_Callback get_push(void)
     {
         return mPush;
     }
@@ -96,19 +96,19 @@ public:
 
     virtual void display(void);
 
-    void Close_Form(void);
+    void close(void);
 
-    void Set_Fields(JField** fieldList, int32_t num)
+    void set_fields(JField** fieldList, int32_t num)
     {
         mFieldList = fieldList;
         mFieldNum = num;
     }
 
-    void Update(void);          /*Save and update parameters*/
+    void update(void);          /*Save and update parameters*/
 
 protected:
 
-    void Create_Form(void);
+    void create(void);
 
 private:
 
@@ -132,7 +132,7 @@ private:
 #define JFORM(objName,strTitle)                 Jform objName(30,2,20,40,strTitle)
 #define FORM_SET_FIELD(formName,fieldPtrs...)\
         JField* formName##list[] = {fieldPtrs};\
-        formName.Set_Fields(formName##list[],ARRAY_SIZE(formName##list[]))
+        formName.set_fields(formName##list[],ARRAY_SIZE(formName##list[]))
 
 
 

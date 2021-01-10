@@ -50,19 +50,19 @@ int main()
     ITEM_SET_APP(item3,snake);
     ITEM_SET_MENU(item13,menu13);
 
-    field1.Set_Pull(Field1_Pull,NULL);
-    field1.Set_Push(Field1_Push,NULL);
-    field2.Set_Pull(Field2_Pull,NULL);
-    field2.Set_Push(Field2_Push,NULL);
-    field3.Set_Pull(Field3_Pull,NULL);
-    field3.Set_Push(Field3_Push,NULL);
+    field1.set_pull(Field1_Pull,NULL);
+    field1.set_push(Field1_Push,NULL);
+    field2.set_pull(Field2_Pull,NULL);
+    field2.set_push(Field2_Push,NULL);
+    field3.set_pull(Field3_Pull,NULL);
+    field3.set_push(Field3_Push,NULL);
 
     MENU_SET_ITEM(baseMenu,&item1,&item2,&item3,&item4,&item5);
     MENU_SET_ITEM(menu1,&item11,&item12,&item13);
     MENU_SET_ITEM(menu13,&item131,&item132,&item133,&item134);
     
     JField* form1List[] = {&field1,&field2,&field3};
-    form1.Set_Fields(form1List,ARRAY_SIZE(form1List));
+    form1.set_fields(form1List,ARRAY_SIZE(form1List));
     
     j_init();
     baseMenu.display();

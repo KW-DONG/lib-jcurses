@@ -2,7 +2,7 @@
 #include <cstring>
 
 
-void JForm::Create_Form(void)
+void JForm::create(void)
 {
     int32_t length = 10;
     int16_t lengthMax = length;
@@ -37,7 +37,7 @@ void JForm::Create_Form(void)
     for (int i = 0; i < mFieldNum; ++i)
     {
         mvwprintw(mLabelWindow,1+i,1,mFieldList[i]->get_title());
-        mFieldList[i]->Pull(q);
+        mFieldList[i]->pull(q);
 
         set_field_buffer(mFields[i],0,q.c_str());
         j_print(q.c_str());
@@ -56,7 +56,7 @@ void JForm::Create_Form(void)
 
 }
 
-void JForm::Close_Form(void)
+void JForm::close(void)
 {
     selected = 0;
 
@@ -77,7 +77,7 @@ void JForm::Close_Form(void)
 void JForm::display(void)
 {
     post_frame();
-    Create_Form();
+    create();
     wrefresh(get_base_window());
     form_driver(mForm,REQ_END_FIELD);
     int c = 0;
@@ -90,12 +90,12 @@ void JForm::display(void)
             case KEY_DOWN:
                 form_driver(mForm,REQ_NEXT_FIELD);
                 form_driver(mForm,REQ_END_FIELD);
-                Base_Clear();
+                base_clear();
                 break;
             case KEY_UP:
                 form_driver(mForm,REQ_PREV_FIELD);
                 form_driver(mForm,REQ_END_FIELD);
-                Base_Clear();
+                base_clear();
                 break;
             case KEY_NPAGE:
                 form_driver(mForm, REQ_SCR_FPAGE);
@@ -108,7 +108,7 @@ void JForm::display(void)
                 break;
             case 10://key_enter
                 form_driver(mForm,REQ_END_FIELD);
-                Update();
+                update();
                 base_print("Saved");
                 refresh();
                 break;
@@ -118,18 +118,18 @@ void JForm::display(void)
         }
         wrefresh(mFormWindow);
     }
-    Close_Form();
+    close();
 }
 
-void JForm::Update(void)
+void JForm::update(void)
 {
     std::string data;
 
     for (int i = 0; i < mFieldNum; i++)
     {
         data.assign(field_buffer(mFields[i],0));
-        mFieldList[i]->Push(data);
-        mFieldList[i]->Pull(data);
+        mFieldList[i]->push(data);
+        mFieldList[i]->pull(data);
         set_field_buffer(mFields[i],0,data.c_str());
     }
 }

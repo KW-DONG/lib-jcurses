@@ -9,6 +9,11 @@
         PROPERTY_R(variable,type)\
         PROPERTY_W(variable,type)
 
+#define FLAG(flag)\
+        void set_##flag##_bit(void)     {flag = true;}\
+        void reset_##flag##_bit(void)   {flag = false;}\
+        bool get_##flag##_bit(void)     {return flag;}
+
 /**
  * @brief JCurses initialization function
  * @note call it as initialization
@@ -43,34 +48,24 @@ public:
         //delwin(base_window);
     }
 
-    PROPERTY_R(x,int32_t);
-
-    PROPERTY_R(y,int32_t);
-
-    PROPERTY_R(w,int32_t);
-
-    PROPERTY_R(h,int32_t);
-
-    PROPERTY_R(base_window,WINDOW*);
-
     void post_frame(void);            /*show title and box*/
 
     void terminal_print(const char* text);
 
+    PROPERTY_R(x,int32_t);
+    PROPERTY_R(y,int32_t);
+    PROPERTY_R(w,int32_t);
+    PROPERTY_R(h,int32_t);
+    PROPERTY_R(base_window,WINDOW*);
+    
 private:
     
     WINDOW* base_window;        /*the main window*/
-
     const int32_t h;            /*current window height*/
-    
     const int32_t w;            /*current window width*/
-    
     const int32_t x;            /*current window start position*/
-    
     const int32_t y;            /*current window start position*/
-    
     const char* title;         /*current menu title and item title*/
-
 };
 
 typedef struct 
@@ -92,7 +87,6 @@ public:
     ~JWidget(){}
 
     PROPERTY_R(title,const char*);
-
     PROPERTY_R(width,int32_t);
 
 protected:
@@ -107,7 +101,7 @@ class JApp : public JWindow
 {
 public:
     JApp(int32_t startX, int32_t startY, uint32_t height, uint32_t width, const char* title):
-    JWindow(startX,startY,height,width,title),refreshBit(true),clearFlag(false){}
+    JWindow(startX,startY,height,width,title),jrefresh(true),jclear(false){}
     ~JApp(){}
 
     virtual void display(){}
@@ -115,36 +109,23 @@ public:
     void base_print(const char* content)
     {
         mvprintw(LINES-2,0,content);
-        clearFlag = true;
+        jclear = true;
     }
 
-    void Base_Clear(void)
+    void base_clear(void)
     {
         base_print("                                    ");
         refresh();
-        Reset_Clear_Flag();
+        reset_jclear_bit();
     }
 
-    void Set_Refresh_Bit(void)  {refreshBit = true;}
-
-    void Reset_Refresh_Bit(void){refreshBit = false;}
-
-    void Set_Clear_Flag(void)   {clearFlag = true;}
-
-    void Reset_Clear_Flag(void) {clearFlag = false;}
-
-    bool Get_Refresh_Bit(void)  {return refreshBit;}
-
-    bool Get_Clear_Flag(void)   {return clearFlag;}
+    FLAG(jrefresh);
+    FLAG(jclear);
 
 private:
 
-    bool refreshBit;
-
-    bool clearFlag;
-
+    bool jrefresh;
+    bool jclear;
 };
-
-
 
 #endif

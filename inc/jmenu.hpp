@@ -13,62 +13,43 @@ class JItem : public JWidget
 public:
     typedef int32_t (*Item_Sel_Callback)(T* menuPtr);
 
-    JItem(const char*title):JWidget(title),itemEvent(NULL),mMessageList(NULL),mNextMenu(NULL),mNextApp(NULL){}
+    JItem(const char*title):JWidget(title),event(NULL),mMessageList(NULL),jmenu(NULL),japp(NULL){}
 
     ~JItem(){}
 
-    void Set_Event(Item_Sel_Callback func, event_feedback_t* messageList)
+    void set_event(Item_Sel_Callback func, event_feedback_t* messageList)
     {
-        itemEvent = func;
+        event = func;
 
         mMessageList = messageList;
     }
 
-    void Set_Next_Menu(T* next)
-    {
-        mNextMenu = next;
-    }
-
-    void Set_Next_App(JApp* next)
-    {
-        mNextApp = next;
-    }
-
-    const char* Selected(T* menuPtr)
+    const char* selected(T* menuPtr)
     {
         if (mMessageList!=NULL)
         {
-           return get_feedback(itemEvent(menuPtr),mMessageList); 
+           return get_feedback(event(menuPtr),mMessageList); 
         }
         else
         {
-            itemEvent(menuPtr);
+            event(menuPtr);
             return "Selected";
         }
     }
 
-    T* Get_Next_Menu()
-    {
-        return mNextMenu;
-    }
+    PROPERTY_RW(japp,JApp*);
 
-    JApp* Get_Next_App()
-    {
-        return mNextApp;
-    }
+    PROPERTY_RW(jmenu,T*);
 
-    Item_Sel_Callback Get_Event(void)
-    {
-        return itemEvent;
-    }
+    PROPERTY_R(event,Item_Sel_Callback);
 
 private:
 
-    T* mNextMenu;
+    T* jmenu;
 
-    JApp* mNextApp;
+    JApp* japp;
 
-    int32_t (*itemEvent)(T* menuPtr);      /*write an event here*/
+    int32_t (*event)(T* menuPtr);      /*write an event here*/
 
     event_feedback_t* mMessageList;
 };
@@ -106,41 +87,17 @@ public:
         item_num = num;
     }
 
-    void set_jmenu_last(JMenu* menu)
-    {
-        jmenu_last = menu;
-    }
+    PROPERTY_RW(jmenu_last,JMenu*);
 
-    JMenu* get_jmenu_last(void)
-    {
-        return jmenu_last;
-    }
+    PROPERTY_R(jitems,JItem<JMenu>**);
 
-    JItem<JMenu>** get_jitems(void)
-    {
-        return jitems;
-    }
+    PROPERTY_R(window_menu,WINDOW*);
 
-    WINDOW* set_window_menu(void)
-    {
-        return window_menu;
-    }
+    PROPERTY_R(menu,MENU*);
 
-    MENU* get_menu(void)
-    {
-        return menu;
-    }
+    PROPERTY_R(items,ITEM**);
 
-    ITEM** get_items(void)
-    {
-        return items;
-    }
-
-    int32_t get_item_num(void)
-    {
-        return item_num;
-    }
-
+    PROPERTY_R(item_num,int32_t);
 
 protected:
 
@@ -228,9 +185,9 @@ private:
 };
 
 #define JITEM(objName,strTitle)                     JItem<JMenu> objName (strTitle)
-#define ITEM_SET_MENU(itemName,menuName)            itemName.Set_Next_Menu(&menuName)
-#define ITEM_SET_APP(itemName,appName)              itemName.Set_Next_App(&appName)
-#define ITEM_SET_EVENT(itemName,eventName,strErr)   itemName.Set_Event(eventName,strErr)
+#define ITEM_SET_MENU(itemName,menuName)            itemName.set_jmenu(&menuName)
+#define ITEM_SET_APP(itemName,appName)              itemName.set_japp(&appName)
+#define ITEM_SET_EVENT(itemName,eventName,strErr)   itemName.set_event(eventName,strErr)
 
 #define JMENU(objName,strTitle)                     JMenu objName (30,2,20,40,strTitle)
 #define JMENU_BASE(objName,strTitle)                JBaseMenu objName (30,2,20,40,strTitle)

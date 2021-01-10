@@ -102,17 +102,17 @@ void JBaseMenu::display(void)
                 ITEM *cur;
                 cur = current_item(mCurrentMenu->get_menu());
 
-                if (mCurrentMenu->get_jitems()[cur->index]->Get_Event()!=NULL)
-                base_print(mCurrentMenu->get_jitems()[cur->index]->Selected(mCurrentMenu));
+                if (mCurrentMenu->get_jitems()[cur->index]->get_event()!=NULL)
+                base_print(mCurrentMenu->get_jitems()[cur->index]->selected(mCurrentMenu));
 
                 JMenu* nextMenu;
-                nextMenu = mCurrentMenu->get_jitems()[cur->index]->Get_Next_Menu();
+                nextMenu = mCurrentMenu->get_jitems()[cur->index]->get_jmenu();
 
                 if (nextMenu!=NULL) Switch_Forward(nextMenu);
                 else
                 {
                     JApp* nextApp;
-                    nextApp = mCurrentMenu->get_jitems()[cur->index]->Get_Next_App();
+                    nextApp = mCurrentMenu->get_jitems()[cur->index]->get_japp();
                     if (nextApp!=NULL)
                     {
                         Run_App(nextApp);
@@ -151,7 +151,7 @@ void JBaseMenu::Menu_Recursion(void)
     mTree.push_back(mCurrentMenu);
     for (i=0;i<num;i++)
     {
-        next = mCurrentMenu->get_jitems()[i]->Get_Next_Menu();
+        next = mCurrentMenu->get_jitems()[i]->get_jmenu();
         if (next != NULL)
         {
             last = mCurrentMenu;

@@ -2,6 +2,24 @@
 #include <stdlib.h>
 #include <cstring>
 
+int upper_mf;
+int bottom_mf;
+
+void uprint(char* text)
+{
+    mvprintw(0,0,text);
+    upper_mf = 1;
+}
+
+void bprint(char* text)
+{
+    mvprintw(LINES-2,0,text);
+    bottom_mf = 1;
+}
+
+
+
+
 void j_init()
 {
     initscr();
@@ -9,6 +27,8 @@ void j_init()
     cbreak();
     noecho();
     keypad(stdscr,TRUE);
+    upper_mf = 0;
+    bottom_mf = 0;
 }
 
 void JWindow::post_frame(void)

@@ -172,8 +172,8 @@ private:
 #define JMENU(objName,strTitle)                     JMenu objName (30,2,20,40,strTitle)
 #define JMENU_BASE(objName,strTitle)                JBaseMenu objName (30,2,20,40,strTitle)
 #define MENU_SET_ITEM(menuName,itemPtrs...)\
-        JItem<JMenu>* menuName##list[] = {itemPtrs};\
-        menuName.set_jitems(menuName##list,ARRAY_SIZE(menuName##list))
+        JItem<JMenu>* menuName##_list[] = {itemPtrs};\
+        menuName.set_jitems(menuName##_list,ARRAY_SIZE(menuName##_list))
 
 #endif
 

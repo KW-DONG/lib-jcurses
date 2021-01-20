@@ -9,6 +9,8 @@ typedef int32_t (*Field_Pull_Callback)(std::string&);
 
 typedef int32_t (*Field_Push_Callback)(std::string&);
 
+typedef int32_t (*Form_IPC)(void);
+
 class JField : public JWidget
 {
 public:
@@ -17,22 +19,13 @@ public:
 
     ~JField(){}
 
-    void set_push(Field_Push_Callback pushCallback, event_feedback_t* messageList)
-    {
-        mPush = pushCallback;
-    }
+    void set_push(Field_Push_Callback pushCallback, event_feedback_t* messageList)  {   mPush = pushCallback;}
 
-    void set_pull(Field_Pull_Callback pullCallback, event_feedback_t* messageList)
-    {
-        mPull = pullCallback;
-    }
+    void set_pull(Field_Pull_Callback pullCallback, event_feedback_t* messageList)  {   mPull = pullCallback;}
 
     const char* pull(std::string& p)
     {
-        if (pullMessageList!=NULL)
-        {
-            return get_feedback(mPull(p),pullMessageList);
-        }
+        if (pullMessageList!=NULL)  return get_feedback(mPull(p),pullMessageList);
         else
         {
             mPull(p);
@@ -42,10 +35,7 @@ public:
 
     const char* push(std::string& p)
     {
-        if (pushMessageList!=NULL)
-        {
-            return get_feedback(mPush(p),pushMessageList);
-        }
+        if (pushMessageList!=NULL)  return get_feedback(mPush(p),pushMessageList);
         else
         {
             mPush(p);
@@ -53,26 +43,15 @@ public:
         }
     }
 
-    Field_Pull_Callback get_pull(void)
-    {
-        return mPull;
-    }
+    Field_Pull_Callback get_pull(void)  {   return mPull;   }
 
-    Field_Push_Callback get_push(void)
-    {
-        return mPush;
-    }
+    Field_Push_Callback get_push(void)  {   return mPush;   }
 
 private:
-
     int32_t (*mPush)(std::string&);
-
     int32_t (*mPull)(std::string&);
-
     event_feedback_t* pushMessageList;
-
     event_feedback_t* pullMessageList;
-
 };
 
 /**
@@ -88,10 +67,8 @@ private:
 class JForm : public JApp
 {
 public:
-
     JForm(int32_t startX, int32_t startY, uint32_t height, uint32_t width, const char* title):
-    JApp(startX,startY,height,width,title),mFieldList(NULL),jmenu_last(NULL),mFieldNum(0){}
-
+    JApp(startX,startY,height,width,title),mFieldList(NULL),jmenu_last(NULL),mFieldNum(0),func(NULL){}
     ~JForm(){}
 
     virtual void display(void);
@@ -106,34 +83,45 @@ public:
 
     void update(void);          /*Save and update parameters*/
 
-protected:
+    void set_ipc(Form_IPC ipc_func) {   func = ipc_func;}
 
+    Form_IPC get_ipc(void)          {   return func;    }
+
+protected:
     void create(void);
 
 private:
-
     WINDOW* mFormWindow;        /*the window that associate the form*/
-
     WINDOW* mLabelWindow;
-
     FORM* mForm;                /*the form list*/
-
     FIELD** mFields;
-
     JField** mFieldList;
-    
     JMenu* jmenu_last;
-
     int32_t mFieldNum;
-
     int32_t selected;
+    Form_IPC func;
 };
 
-#define JFORM(objName,strTitle)                 Jform objName(30,2,20,40,strTitle)
-#define FORM_SET_FIELD(formName,fieldPtrs...)\
-        JField* formName##list[] = {fieldPtrs};\
-        formName.set_fields(formName##list[],ARRAY_SIZE(formName##list[]))
+#define JFORM(objName,strTitle)                 JForm objName(30,2,20,40,strTitle)
 
+#define JFIELD_TRANS_F(objName,data)\
+        int32_t objName##_push(std::string& text)    {data = STR2FLT(text.c_str());}\
+        int32_t objName##_pull(std::string& text)    {text.assign(FLT2STR(data));}
+
+#define JFIELD_TRANS_I(objName,data)\
+        int32_t objName##_push(std::string& text)    {data = STR2INT(text.c_str());}\
+        int32_t objName##_pull(std::string& text)    {text.assign(INT2STR(data));}
+
+#define JFIELD(objName, strTitle)\
+        JField objName(strTitle);\
+        objName.set_pull(objName##_pull,NULL);\
+        objName.set_push(objName##_push,NULL)
+
+#define FORM_SET_FIELD(formName,fieldPtrs...)\
+        JField* formName##_list[] = {fieldPtrs};\
+        formName.set_fields(formName##_list,ARRAY_SIZE(formName##_list))
+
+#define FORM_SET_IPC(formName, ipcPtr)  formName.set_ipc(ipcPtr)
 
 
 #endif

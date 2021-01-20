@@ -90,12 +90,12 @@ void JForm::display(void)
             case KEY_DOWN:
                 form_driver(mForm,REQ_NEXT_FIELD);
                 form_driver(mForm,REQ_END_FIELD);
-                base_clear();
+                U_CLEAR;
                 break;
             case KEY_UP:
                 form_driver(mForm,REQ_PREV_FIELD);
                 form_driver(mForm,REQ_END_FIELD);
-                base_clear();
+                U_CLEAR;
                 break;
             case KEY_NPAGE:
                 form_driver(mForm, REQ_SCR_FPAGE);
@@ -109,7 +109,7 @@ void JForm::display(void)
             case 10://key_enter
                 form_driver(mForm,REQ_END_FIELD);
                 update();
-                base_print("Saved");
+                U_PRINT("Saved");
                 refresh();
                 break;
             default:
@@ -124,6 +124,8 @@ void JForm::display(void)
 void JForm::update(void)
 {
     std::string data;
+
+    if (func!=NULL) get_ipc();
 
     for (int i = 0; i < mFieldNum; i++)
     {

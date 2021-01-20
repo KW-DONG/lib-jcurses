@@ -1,6 +1,9 @@
 #ifndef __JWINDOW_HPP
 #define __JWINDOW_HPP
 #include <ncurses.h>
+#include <cstdlib>
+#include <cstdio>
+#include <string>
 
 #define PROPERTY_R(variable,type) type get_##variable(void) {return variable;}
 #define PROPERTY_W(variable,type) void set_##variable(type value) {variable=value;}
@@ -13,6 +16,34 @@
         void set_##flag##_bit(void)     {flag = true;}\
         void reset_##flag##_bit(void)   {flag = false;}\
         bool get_##flag##_bit(void)     {return flag;}
+
+#define STR2FLT(str)    atof (str)
+#define STR2INT(str)    atoi (str)
+#define FLT2STR(flt)\
+        ({\
+            char strBuff[21];\
+            sprintf(strBuff,"%.2f",flt);\
+            strBuff;\
+        })
+
+#define INT2STR(i)\
+        ({\
+            char strBuff[21];\
+            sprintf(strBuff,"%d",i);\
+            strBuff;\
+        })
+
+/*************Flags****************/
+extern int upper_mf;
+extern int bottom_mf;
+
+void uprint(const char* text);
+void bprint(char* text);
+
+#define U_PRINT(text)   uprint(text)
+#define B_PRINT(text)   bprint(text)
+#define U_CLEAR         uprint("                  ")
+#define B_CLEAR         bprint("                  ")
 
 /**
  * @brief JCurses initialization function
@@ -101,31 +132,13 @@ class JApp : public JWindow
 {
 public:
     JApp(int32_t startX, int32_t startY, uint32_t height, uint32_t width, const char* title):
-    JWindow(startX,startY,height,width,title),jrefresh(true),jclear(false){}
+    JWindow(startX,startY,height,width,title),jrefresh(true){}
     ~JApp(){}
-
     virtual void display(){}
-
-    void base_print(const char* content)
-    {
-        mvprintw(LINES-2,0,content);
-        jclear = true;
-    }
-
-    void base_clear(void)
-    {
-        base_print("                                    ");
-        refresh();
-        reset_jclear_bit();
-    }
-
     FLAG(jrefresh);
-    FLAG(jclear);
 
 private:
-
     bool jrefresh;
-    bool jclear;
 };
 
 #endif

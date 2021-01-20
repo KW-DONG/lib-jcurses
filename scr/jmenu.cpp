@@ -14,7 +14,7 @@ void JMenu::create(void)
         items[i] = new_item(jitems[i]->get_title()," ");
         if (length>mLengthMax)   mLengthMax = length+2;
     }
-
+    items[item_num] = new_item((char*)NULL,(char*)NULL);
     menu = new_menu((ITEM**)items);
 }
 
@@ -75,12 +75,10 @@ void JBaseMenu::display(void)
         {
         case KEY_DOWN:
             menu_driver(mCurrentMenu->get_menu(), REQ_DOWN_ITEM);
-            if (get_jclear_bit())    base_clear();
             break;
         
         case KEY_UP:
             menu_driver(mCurrentMenu->get_menu(), REQ_UP_ITEM);
-            if (get_jclear_bit())    base_clear();
             break;
 
         case KEY_NPAGE:
@@ -94,7 +92,6 @@ void JBaseMenu::display(void)
         case KEY_LEFT:
             if (mCurrentMenu->get_jmenu_last()!=NULL)
             switch_b();
-            base_clear();
             break;
         
         case KEY_RIGHT:
@@ -103,7 +100,7 @@ void JBaseMenu::display(void)
                 cur = current_item(mCurrentMenu->get_menu());
 
                 if (mCurrentMenu->get_jitems()[cur->index]->get_event()!=NULL)
-                base_print(mCurrentMenu->get_jitems()[cur->index]->selected(mCurrentMenu));
+                U_PRINT(mCurrentMenu->get_jitems()[cur->index]->selected(mCurrentMenu));
 
                 JMenu* nextMenu;
                 nextMenu = mCurrentMenu->get_jitems()[cur->index]->get_jmenu();
@@ -113,11 +110,7 @@ void JBaseMenu::display(void)
                 {
                     JApp* nextApp;
                     nextApp = mCurrentMenu->get_jitems()[cur->index]->get_japp();
-                    if (nextApp!=NULL)
-                    {
-                        run_japp(nextApp);
-                    }
-                    
+                    if (nextApp!=NULL)      run_japp(nextApp);
                 }
                 refresh(); 
             }

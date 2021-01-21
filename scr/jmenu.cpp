@@ -62,7 +62,7 @@ void JBaseMenu::display(void)
     mCurrentMenu = first;
     while(c != KEY_F(2))
     {
-        get_refresh_update();
+        if (get_refresh_update()!=NULL) refresh_update();
         
         if (get_jrefresh_bit())
         {
@@ -102,8 +102,10 @@ void JBaseMenu::display(void)
                 cur = current_item(mCurrentMenu->get_menu());
 
                 if (mCurrentMenu->get_jitems()[cur->index]->get_event()!=NULL)
-                U_PRINT(mCurrentMenu->get_jitems()[cur->index]->selected(mCurrentMenu));
-
+                {
+                    U_PRINT(mCurrentMenu->get_jitems()[cur->index]->selected(mCurrentMenu));
+                }
+                
                 JMenu* nextMenu;
                 nextMenu = mCurrentMenu->get_jitems()[cur->index]->get_jmenu();
 
@@ -114,7 +116,7 @@ void JBaseMenu::display(void)
                     nextApp = mCurrentMenu->get_jitems()[cur->index]->get_japp();
                     if (nextApp!=NULL)      run_japp(nextApp);
                 }
-                refresh(); 
+                //refresh(); 
             }
             break;
         }

@@ -22,9 +22,9 @@ int main(int argc, char* argv[])
 
     while (1)
     {
-        std::cout << "write:" << write(pipe_w_fd,&ipc_data,IPC_BUFFER_SIZE) << std::endl;
+        //std::cout << "write:" << write(pipe_w_fd,&ipc_data,IPC_BUFFER_SIZE) << std::endl;
        
-        std::cout << "running" << std::endl;
+        //std::cout << "running" << std::endl;
         if (ipc_data.func)
         {
             if (ipc_data.boolNum == true)   ipc_data.boolNum = false;
@@ -38,10 +38,10 @@ int main(int argc, char* argv[])
 
         if ((read (pipe_r_fd,&ipc_data,IPC_BUFFER_SIZE))!=IPC_BUFFER_SIZE)
         {
-            std::cout << "read fail" << std::endl;
+            //std::cout << "read fail" << std::endl;
         }
  
-        sleep(1);
+        //sleep(1);
     }
     std::cout << "backstage finished" << std::endl;
 

@@ -26,25 +26,25 @@ int main()
 {
     pid_t pid;
 
-    if (access (FIFO_F2B_NAME,F_OK)==-1)  
-    {  
-        if(mkfifo(FIFO_F2B_NAME,S_IRUSR|S_IWUSR|S_IWGRP)!=0) U_PRINT("Could not create fifo f2b"); 
-    }
+    //if (access (FIFO_F2B_NAME,F_OK)==-1)  
+    //{  
+    //    if(mkfifo(FIFO_F2B_NAME,S_IRUSR|S_IWUSR|S_IWGRP)!=0) U_PRINT("Could not create fifo f2b"); 
+    //}
 
-    if (access (FIFO_B2F_NAME,F_OK)==-1)
-    {
-        if(mkfifo(FIFO_B2F_NAME,S_IRUSR|S_IWUSR|S_IWGRP)!=0) U_PRINT("Could not create fifo b2f");
-    }
+    //if (access (FIFO_B2F_NAME,F_OK)==-1)
+    //{
+    //    if(mkfifo(FIFO_B2F_NAME,S_IRUSR|S_IWUSR|S_IWGRP)!=0) U_PRINT("Could not create fifo b2f");
+    //}
 
     std::cout << "fifo created" << std::endl;
 
-    if ((pid = fork()) < 0) std::cout << "Fork Error" << std::endl;
-    else if (pid == 0)
-    {
-        if (execve(BACK_PATH,NULL,env_init)<0) std::cout << "Exec Error" << std::endl;
-        else std::cout << "Exec Success" << std::endl;
-    }
-    else std::cout << "Base process" << std::endl;
+    //if ((pid = fork()) < 0) std::cout << "Fork Error" << std::endl;
+    //else if (pid == 0)
+    //{
+    //    if (execve(BACK_PATH,NULL,env_init)<0) std::cout << "Exec Error" << std::endl;
+    //    else std::cout << "Exec Success" << std::endl;
+    //}
+    //else std::cout << "Base process" << std::endl;
 
     sleep(3);
 
@@ -95,10 +95,10 @@ int main()
     MENU_SET_ITEM(baseMenu,&item1,&item2,&item3,&item4,&item5);
     MENU_SET_ITEM(menu1,&item11,&item12,&item13,&item14,&item15);
     MENU_SET_ITEM(menu13,&item131,&item132,&item133,&item134);
-    baseMenu.set_refresh_update()
+    baseMenu.set_refresh_update(named_pipe_read);
     
-    //j_init();
-    //baseMenu.display();
+    j_init();
+    baseMenu.display();
 
     std::cout << "into while" << std::endl;
     while(1){sleep(1);};
@@ -113,22 +113,27 @@ int main()
     return 0;
 }
 
-int32_t Item12_Event(JMenu* ptr)    {   bprint(INT2STR(intNum));}
+int32_t Item12_Event(JMenu* ptr)    {   B_PRINT(INT2STR(intNum));}
 
-int32_t Item13_Event(JMenu* ptr)    {   bprint(FLT2STR(floatNum));}
+int32_t Item13_Event(JMenu* ptr)    {   B_PRINT(FLT2STR(floatNum));}
 
-int32_t Item14_Event(JMenu* ptr)    {   bprint(INT2STR(boolNum));}
+int32_t Item14_Event(JMenu* ptr)    {   B_PRINT(INT2STR(boolNum));}
 
 int32_t named_pipe_write(void)
 {
-    write (pipe_w_fd,&ipc_data,IPC_BUFFER_SIZE);
-    sleep(1);
+    int res = write (pipe_w_fd,&ipc_data,IPC_BUFFER_SIZE);
+    U_PRINT(INT2STR(res));
 }
+
+int temp = 0;
 
 int32_t named_pipe_read(void)
 {
-    read (pipe_r_fd,&ipc_data,IPC_BUFFER_SIZE);
-    sleep(1);
+    if (temp>100)   temp = 0;
+    else            temp++;
+    
+    int res = read (pipe_r_fd,&ipc_data,IPC_BUFFER_SIZE);
+    U_PRINT(INT2STR(temp));
 }
 
 

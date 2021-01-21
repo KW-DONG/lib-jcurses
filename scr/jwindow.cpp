@@ -5,20 +5,17 @@
 int upper_mf;
 int bottom_mf;
 
-void uprint(char* text)
+void uprint(const char* text)
 {
     mvprintw(0,0,text);
     upper_mf = 1;
 }
 
-void bprint(char* text)
+void bprint(const char* text)
 {
     mvprintw(LINES-2,0,text);
     bottom_mf = 1;
 }
-
-
-
 
 void j_init()
 {

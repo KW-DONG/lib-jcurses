@@ -38,7 +38,7 @@ extern int upper_mf;
 extern int bottom_mf;
 
 void uprint(const char* text);
-void bprint(char* text);
+void bprint(const char* text);
 
 #define U_PRINT(text)   uprint(text)
 #define B_PRINT(text)   bprint(text)
@@ -50,8 +50,6 @@ void bprint(char* text);
  * @note call it as initialization
  */
 void j_init(void);
-
-void j_print(const char* content);
 
 /**
  *                 w

@@ -101,11 +101,13 @@ protected:
     int32_t         mLengthMax;
 };
 
+typedef int32_t (*Refresh_Update)(void);
+
 class JBaseMenu : public JApp
 {
 public:
     JBaseMenu(int32_t startX, int32_t startY, uint32_t height, uint32_t width, const char* title):
-    JApp(startX,startY,height,width,title),mThisMenu(NULL)
+    JApp(startX,startY,height,width,title),mThisMenu(NULL),refresh_update(NULL)
     {
         mThisMenu = (JMenu*)new JMenu(startX,startY,height,width,title);
         mCurrentMenu = mThisMenu;
@@ -117,12 +119,11 @@ public:
         mThisMenu = NULL;
     }
 
-    void set_jitems(JItem<JMenu>** list, int32_t num)
-    {
-        mThisMenu->set_jitems(list,num);
-    }
+    void set_jitems(JItem<JMenu>** list, int32_t num)   {mThisMenu->set_jitems(list,num);}
 
     virtual void display(void);
+
+    PROPERTY_RW(refresh_update,Refresh_Update);
 
 protected:
     void switch_f(JMenu* newMenu)
@@ -162,6 +163,8 @@ private:
     JMenu* mCurrentMenu;    //current menu displayed
     JMenu* mThisMenu;       //base menu
     std::vector<JMenu*> mTree;
+    Refresh_Update refresh_update;
+
 };
 
 #define JITEM(objName,strTitle)                     JItem<JMenu> objName (strTitle)

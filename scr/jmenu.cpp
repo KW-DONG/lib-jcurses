@@ -62,6 +62,8 @@ void JBaseMenu::display(void)
     mCurrentMenu = first;
     while(c != KEY_F(2))
     {
+        get_refresh_update();
+        
         if (get_jrefresh_bit())
         {
             refresh_menu();

@@ -40,7 +40,7 @@ void JForm::create(void)
         mFieldList[i]->pull(q);
 
         set_field_buffer(mFields[i],0,q.c_str());
-        j_print(q.c_str());
+        bprint(q.c_str());
         refresh();
     }
 

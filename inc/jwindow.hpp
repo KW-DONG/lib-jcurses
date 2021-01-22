@@ -38,20 +38,20 @@ extern int upper_mf;
 extern int bottom_mf;
 
 void uprint(const char* text);
-void bprint(const char* text);
+void bprint(const char* text, int line);
 
 
 #define U_CLEAR         uprint("                  ")
-#define B_CLEAR         bprint("                  ")
+#define B_CLEAR         bprint("                  ",2)
 
 #define U_PRINT(text)\
             U_CLEAR;\
             uprint(text);\
             refresh()
 
-#define B_PRINT(text)\
-            B_CLEAR;\
-            bprint(text);\
+#define B_PRINT(text,line)\
+            bprint("                  ",line);\
+            bprint(text,line);\
             refresh()
 
 /**

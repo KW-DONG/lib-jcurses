@@ -61,9 +61,7 @@ void JBaseMenu::display(void)
     create();
     mCurrentMenu = first;
     while(c != KEY_F(2))
-    {
-        if (get_refresh_update()!=NULL) refresh_update();
-        
+    {   
         if (get_jrefresh_bit())
         {
             refresh_menu();
@@ -116,7 +114,7 @@ void JBaseMenu::display(void)
                     nextApp = mCurrentMenu->get_jitems()[cur->index]->get_japp();
                     if (nextApp!=NULL)      run_japp(nextApp);
                 }
-                //refresh(); 
+                refresh(); 
             }
             break;
         }

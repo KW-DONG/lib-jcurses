@@ -4,6 +4,7 @@
 #include "jwindow.hpp"
 #include <form.h>
 #include <string>
+#include <pthread.h>
 
 typedef int32_t (*Field_Pull_Callback)(std::string&);
 
@@ -68,7 +69,7 @@ class JForm : public JApp
 {
 public:
     JForm(int32_t startX, int32_t startY, uint32_t height, uint32_t width, const char* title):
-    JApp(startX,startY,height,width,title),mFieldList(NULL),jmenu_last(NULL),mFieldNum(0),func(NULL){}
+    JApp(startX,startY,height,width,title),mFieldList(NULL),jmenu_last(NULL),mFieldNum(0){}
     ~JForm(){}
 
     virtual void display(void);
@@ -83,10 +84,6 @@ public:
 
     void update(void);          /*Save and update parameters*/
 
-    void set_ipc(Form_IPC ipc_func) {   func = ipc_func;}
-
-    Form_IPC get_ipc(void)          {   return func;    }
-
 protected:
     void create(void);
 
@@ -99,18 +96,45 @@ private:
     JMenu* jmenu_last;
     int32_t mFieldNum;
     int32_t selected;
-    Form_IPC func;
 };
 
 #define JFORM(objName,strTitle)                 JForm objName(30,2,20,40,strTitle)
 
 #define JFIELD_TRANS_F(objName,data)\
-        int32_t objName##_push(std::string& text)    {data = STR2FLT(text.c_str());}\
-        int32_t objName##_pull(std::string& text)    {text.assign(FLT2STR(data));}
+        int32_t objName##_push(std::string& text)   {data = STR2FLT(text.c_str());}\
+        int32_t objName##_pull(std::string& text)   {text.assign(FLT2STR(data));}
 
 #define JFIELD_TRANS_I(objName,data)\
-        int32_t objName##_push(std::string& text)    {data = STR2INT(text.c_str());}\
-        int32_t objName##_pull(std::string& text)    {text.assign(INT2STR(data));}
+        int32_t objName##_push(std::string& text)   {data = STR2INT(text.c_str());}\
+        int32_t objName##_pull(std::string& text)   {text.assign(INT2STR(data));}
+
+#define P_JFIELD_TRANS_F(objName,data,mtxPtr)\
+        int32_t objName##_push(std::string& text)\
+            {\
+                pthread_mutex_lock(mtxPtr);\
+                data = STR2FLT(text.c_str());\
+                pthread_mutex_unlock(mtxPtr);\
+            }\
+        int32_t objName##_pull(std::string& text)\
+            {\
+                pthread_mutex_lock(mtxPtr);\
+                text.assign(FLT2STR(data));\
+                pthread_mutex_unlock(mtxPtr);\
+            }
+
+#define P_JFIELD_TRANS_I(objName,data,mtxPtr)\
+        int32_t objName##_push(std::string& text)\
+            {\
+                pthread_mutex_lock(mtxPtr);\
+                data = STR2INT(text.c_str());\
+                pthread_mutex_unlock(mtxPtr);\
+            }\
+        int32_t objName##_pull(std::string& text)\
+            {\
+                pthread_mutex_lock(mtxPtr);\
+                text.assign(INT2STR(data));\
+                pthread_mutex_unlock(mtxPtr);\
+            }
 
 #define JFIELD(objName, strTitle)\
         JField objName(strTitle);\
@@ -121,7 +145,6 @@ private:
         JField* formName##_list[] = {fieldPtrs};\
         formName.set_fields(formName##_list,ARRAY_SIZE(formName##_list))
 
-#define FORM_SET_IPC(formName, ipcPtr)  formName.set_ipc(ipcPtr)
 
 
 #endif

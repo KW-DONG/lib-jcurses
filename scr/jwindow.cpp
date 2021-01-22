@@ -11,9 +11,9 @@ void uprint(const char* text)
     upper_mf = 1;
 }
 
-void bprint(const char* text)
+void bprint(const char* text, int line)
 {
-    mvprintw(LINES-2,0,text);
+    mvprintw(LINES-line,0,text);
     bottom_mf = 1;
 }
 

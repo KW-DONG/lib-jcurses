@@ -8,11 +8,15 @@
                 "-g",
                 "${workspaceFolder}/demo/snake.cpp",
                 "${workspaceFolder}/demo/main.cpp",
+                //"${workspaceFolder}/demo/backstage.cpp",
                 "${workspaceFolder}/scr/jform.cpp",
                 "${workspaceFolder}/scr/jmenu.cpp",
                 "${workspaceFolder}/scr/jwindow.cpp",
+                //"${workspaceFolder}/demo/thread_test.cpp",
                 "-o",
-                "${workspaceFolder}/snake",
+                //"${workspaceFolder}/build/back",
+                "${workspaceFolder}/build/front",
+                //"${workspaceFolder}/build/thread_test",
                 "-I", "/usr/include",
                 "-I", "/usr/local/include",
                 "-I", "${workspaceFolder}/inc",
@@ -25,6 +29,7 @@
                 "-l", "panel",
                 "-l", "form",
                 "-l", "curses",
+                "-l", "pthread"
             ],
             "options": {
                 "cwd": "/usr/bin"

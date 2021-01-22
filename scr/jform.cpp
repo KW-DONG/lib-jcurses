@@ -40,7 +40,7 @@ void JForm::create(void)
         mFieldList[i]->pull(q);
 
         set_field_buffer(mFields[i],0,q.c_str());
-        bprint(q.c_str());
+        bprint(q.c_str(),2);
         refresh();
     }
 
@@ -106,6 +106,9 @@ void JForm::display(void)
             case KEY_BACKSPACE:
                 form_driver(mForm,REQ_DEL_PREV);
                 break;
+            case 127: //delete
+                form_driver(mForm,REQ_DEL_PREV);
+                break;
             case 10://key_enter
                 form_driver(mForm,REQ_END_FIELD);
                 update();
@@ -125,7 +128,6 @@ void JForm::update(void)
 {
     std::string data;
 
-    if (func!=NULL) get_ipc();
 
     for (int i = 0; i < mFieldNum; i++)
     {

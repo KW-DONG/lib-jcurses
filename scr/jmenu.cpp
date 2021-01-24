@@ -12,7 +12,7 @@ void JMenu::create(void)
     {
         length = jitems[i]->get_width();
         items[i] = new_item(jitems[i]->get_title()," ");
-        if (length>mLengthMax)   mLengthMax = length+2;
+        if (length>mLengthMax)   mLengthMax = length + 3;
     }
     items[item_num] = new_item((char*)NULL,(char*)NULL);
     menu = new_menu((ITEM**)items);
@@ -32,7 +32,6 @@ void JMenu::post(void)
 
     post_menu(menu);
 }
-
 
 void JMenu::close(void)
 {
@@ -175,7 +174,6 @@ void JBaseMenu::menu_sort(void)
         }
     }
 }
-
 
 void JBaseMenu::create(void)
 {

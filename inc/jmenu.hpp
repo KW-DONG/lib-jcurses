@@ -66,7 +66,7 @@ class JMenu : public JWindow
 public:
 
     JMenu(int32_t startX, int32_t startY, uint32_t height, uint32_t width, const char* title):
-    JWindow(startX,startY,height,width,title),jitems(NULL),item_num(0),initFlag(true),mLengthMax(10){}
+    JWindow(startX,startY,height,width,title),jitems(NULL),item_num(0),initFlag(true),mLengthMax(0){}
 
     ~JMenu(){}
 

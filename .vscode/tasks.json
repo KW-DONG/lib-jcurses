@@ -15,7 +15,7 @@
                 //"${workspaceFolder}/demo/thread_test.cpp",
                 "-o",
                 //"${workspaceFolder}/build/back",
-                "${workspaceFolder}/build/front",
+                "${workspaceFolder}/build/demo",
                 //"${workspaceFolder}/build/thread_test",
                 "-I", "/usr/include",
                 "-I", "/usr/local/include",

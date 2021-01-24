@@ -58,7 +58,9 @@ void bprint(const char* text, int line);
  * @brief JCurses initialization function
  * @note call it as initialization
  */
-void j_init(void);
+void curses_init(void);
+
+void curses_exit(void);
 
 /**
  *                 w

@@ -119,7 +119,6 @@ void JForm::display(void)
                 form_driver(mForm,c);
                 break;
         }
-        wrefresh(mFormWindow);
     }
     close();
 }

@@ -17,7 +17,7 @@ void bprint(const char* text, int line)
     bottom_mf = 1;
 }
 
-void j_init()
+void curses_init()
 {
     initscr();
     //curs_set(0);
@@ -26,6 +26,12 @@ void j_init()
     keypad(stdscr,TRUE);
     upper_mf = 0;
     bottom_mf = 0;
+}
+
+void curses_exit()
+{
+    refresh();
+    endwin();
 }
 
 void JWindow::post_frame(void)
